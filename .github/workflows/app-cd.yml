@@ -1,0 +1,73 @@
+name: App CD - Deploy to EKS with Helm
+
+on:
+  workflow_run:
+    workflows:
+      - "App CI - Build and Push to ECR"
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+  EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
+  HELM_RELEASE_NAME: ${{ vars.HELM_RELEASE_NAME }}
+  HELM_NAMESPACE: ${{ vars.HELM_NAMESPACE }}
+
+jobs:
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=$(echo ${{ github.event.workflow_run.head_sha }} | cut -c1-7)" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name $EKS_CLUSTER_NAME
+
+      - name: Verify cluster access
+        run: |
+          kubectl get nodes
+          kubectl get pods -A
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install $HELM_RELEASE_NAME ./helm/junior-devops-api \
+            --namespace $HELM_NAMESPACE \
+            --create-namespace \
+            --set image.tag=$IMAGE_TAG \
+            --wait \
+            --timeout 5m
+
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/$HELM_RELEASE_NAME \
+            -n $HELM_NAMESPACE \
+            --timeout=180s
+
+      - name: Show application resources
+        if: always()
+        run: |
+          kubectl get all -n $HELM_NAMESPACE
+          helm list -n $HELM_NAMESPACE

@@ -1,0 +1,12 @@
+{
+  "name": "junior-devops-api",
+  "version": "1.0.0",
+  "description": "Simple API for a junior DevOps EKS portfolio project",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  }
+}

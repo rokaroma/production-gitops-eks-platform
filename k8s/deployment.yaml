@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: junior-devops-api
+  namespace: junior-devops
+  labels:
+    app: junior-devops-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: junior-devops-api
+  template:
+    metadata:
+      labels:
+        app: junior-devops-api
+    spec:
+      containers:
+        - name: junior-devops-api
+          image: 250205158357.dkr.ecr.us-east-1.amazonaws.com/junior-devops-api:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"

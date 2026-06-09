@@ -1,8 +1,15 @@
 const express = require("express");
+const client = require("prom-client");
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+
+const register = new client.Registry();
+
+client.collectDefaultMetrics({
+  register
+});
 
 app.get("/", (req, res) => {
   res.json({
@@ -15,6 +22,11 @@ app.get("/health", (req, res) => {
   res.status(200).json({
     status: "healthy"
   });
+});
+
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
 });
 
 app.listen(PORT, () => {

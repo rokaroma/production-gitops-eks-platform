@@ -1,28 +1,33 @@
-# Junior DevOps EKS Project
+# Production-Grade GitOps Platform on AWS EKS
 
-This project is a junior-friendly DevOps portfolio project.
+Production-ready cloud-native platform built using AWS EKS, Terraform, Kubernetes, GitHub Actions, ArgoCD, Helm, Prometheus, and Grafana.
 
-It demonstrates:
+## Architecture
 
-- A simple Node.js API
-- Docker image creation
-- Amazon ECR image registry
-- AWS EKS Kubernetes deployment
-- Helm-based deployment
-- GitHub Actions CI/CD
-- Trivy security scanning
-- Prometheus and Grafana monitoring
-- Rollback and troubleshooting steps
+Terraform → AWS Infrastructure → EKS → GitHub Actions → ArgoCD → Kubernetes → Prometheus → Grafana
 
-## Application
+## Technologies
 
-The application is a simple Express.js API.
+- AWS
+- Terraform
+- Kubernetes
+- Docker
+- GitHub Actions
+- ArgoCD
+- Helm
+- Prometheus
+- Grafana
+- OIDC
+- IRSA
 
-Endpoints:
+## Key Features
 
-- `/` returns a basic application message
-- `/health` returns application health status
-
-## Sprint 1
-
-In Sprint 1, we created the project structure and a simple API.
+- Infrastructure as Code (Terraform)
+- GitOps Deployments (ArgoCD)
+- CI/CD Automation (GitHub Actions)
+- Kubernetes Platform Engineering
+- OIDC Authentication
+- IAM Roles for Service Accounts (IRSA)
+- Observability with Prometheus & Grafana
+- Security Scanning
+- Automated Deployments

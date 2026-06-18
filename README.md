@@ -2,6 +2,20 @@
 
 Production-ready cloud-native platform built using AWS EKS, Terraform, Kubernetes, GitHub Actions, ArgoCD, Helm, Prometheus, and Grafana.
 
+GitHub
+   |
+GitHub Actions
+   |
+ArgoCD
+   |
+Amazon EKS
+   |
+Microservices
+   |
+Prometheus
+   |
+Grafana
+
 ## Architecture
 
 Terraform → AWS Infrastructure → EKS → GitHub Actions → ArgoCD → Kubernetes → Prometheus → Grafana
